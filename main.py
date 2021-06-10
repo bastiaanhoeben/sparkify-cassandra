@@ -70,7 +70,7 @@ def create_aggregate_datafile(file_path_list):
              'length', 'level', 'location', 'sessionId', 'song', 'userId'])
         for row in full_data_rows_list:
             if (row[0] == ''):
-                continue
+                continue # skips entries with missing artist
             writer.writerow((row[0], row[2], row[3], row[4], row[5], row[6],
                              row[7], row[8], row[12], row[13], row[16]))
 
