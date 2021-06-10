@@ -1,5 +1,5 @@
 import pandas as pd
-import cassandra
+from cassandra.cluster import Cluster
 import re
 import os
 import glob
@@ -31,7 +31,7 @@ def get_datafile_paths():
 def create_aggregate_datafile(file_path_list):
     """
     Creates one aggregate data file in csv format to be used for Apache
-    Cassandra tables
+    Cassandra tables.
     :param file_path_list: a list of individual data file file paths
     """
 
@@ -45,7 +45,7 @@ def create_aggregate_datafile(file_path_list):
         with open(f, 'r', encoding='utf8', newline='') as csvfile:
             # creating a csv reader object
             csvreader = csv.reader(csvfile)
-            next(csvreader)
+            next(csvreader) # skip header
 
             # extracting each data row one by one and append it
             for line in csvreader:
@@ -77,9 +77,43 @@ def create_aggregate_datafile(file_path_list):
     with open('event_datafile_new.csv', 'r', encoding = 'utf8') as f:
         print(f"Number of rows in denormalized data: {sum(1 for line in f)}")
 
+
+def connect_to_database():
+    """
+    Connect to a local Cassandra database instance, and create and connect to
+    keyspace.
+    """
+
+    # Create a connection to the cassandra database
+    try:
+        cluster = Cluster(['127.0.0.1'])
+        session = cluster.connect()
+    except Exception as e:
+        print(e)
+
+    # Create a keyspace
+    try:
+        session.execute("""CREATE KEYSPACE IF NOT EXISTS sparkify WITH 
+        REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 }
+        """)
+    except Exception as e:
+        print(e)
+
+    # Connect to the keyspace
+    try:
+        session.set_keyspace('sparkify')
+    except Exception as e:
+        print(e)
+
+        
+
+
+
 def main():
     file_path_list = get_datafile_paths()
     create_aggregate_datafile(file_path_list)
+    connect_to_database()
+
 
 if __name__ == "__main__":
     main()
