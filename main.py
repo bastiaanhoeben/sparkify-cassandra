@@ -53,7 +53,7 @@ def create_aggregate_datafile(file_path_list):
                 full_data_rows_list.append(line)
 
     # get total number of rows from aggregate csv
-    print(f"Number of rows in raw data: {len(full_data_rows_list)}")
+    print("Number of rows in raw data: {}".format(len(full_data_rows_list)))
     # show first entry of event data rows
     # print(full_data_rows_list[0])
 
@@ -75,7 +75,8 @@ def create_aggregate_datafile(file_path_list):
 
     # check the number of rows in your csv file
     with open('event_datafile_new.csv', 'r', encoding = 'utf8') as f:
-        print(f"Number of rows in denormalized data: {sum(1 for line in f)}")
+        print("Number of rows in denormalized data: {}".format(sum(1 for line
+                                                                   in f)))
 
 
 def connect_to_database():
@@ -104,8 +105,6 @@ def connect_to_database():
         session.set_keyspace('sparkify')
     except Exception as e:
         print(e)
-
-        
 
 
 
