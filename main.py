@@ -6,6 +6,7 @@ import glob
 import numpy as np
 import json
 import csv
+from cql_queries import *
 
 
 def get_datafile_paths():
