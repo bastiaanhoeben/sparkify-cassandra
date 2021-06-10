@@ -79,18 +79,11 @@ def create_aggregate_datafile(file_path_list):
                                                                    in f)))
 
 
-def connect_to_database():
+def create_keyspace(session):
     """
-    Connect to a local Cassandra database instance, and create and connect to
-    keyspace.
+    Create keyspace and connect to keyspace.
+    :param: active database session
     """
-
-    # Create a connection to the cassandra database
-    try:
-        cluster = Cluster(['127.0.0.1'])
-        session = cluster.connect()
-    except Exception as e:
-        print(e)
 
     # Create a keyspace
     try:
@@ -109,10 +102,21 @@ def connect_to_database():
 
 
 def main():
+    # create csv files
     file_path_list = get_datafile_paths()
     create_aggregate_datafile(file_path_list)
-    connect_to_database()
 
+    # Create a connection to the cassandra database
+    try:
+        cluster = Cluster(['127.0.0.1']) # using 9042 native client port
+        session = cluster.connect()
+    except Exception as e:
+        print(e)
+
+    create_keyspace(session)
+
+    session.shutdown()
+    cluster.shutdown()
 
 if __name__ == "__main__":
     main()
