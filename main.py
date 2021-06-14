@@ -98,21 +98,40 @@ def create_database_connection(host):
     return cluster, session
 
 
+def create_tables(session):
+
+    for query in create_tables_queries:
+        session.execute(query)
+
+
+def drop_tables(session):
+
+    for query in drop_tables_queries:
+        session.execute(query)
+
+
 def main():
     # create csv files
     file_path_list = get_datafile_paths()
 
+    # write aggregate data to csv file
     filename = 'event_datafile_new.csv'
     create_aggregate_datafile(file_path_list, filename)
 
-    # Create a connection to the local cassandra database
+    # create a connection to the local cassandra database
     cluster, session = create_database_connection('127.0.0.1')
 
-    session.execute(create_sparkify_keyspace)  # create keyspace
+    session.execute(create_keyspace_query)  # create keyspace
     session.set_keyspace('sparkify')  # connect to the keyspace
 
-    session.shutdown()
-    cluster.shutdown()
+    create_tables(session)  # create tables
+
+
+
+    drop_tables(session)  # drop tables
+
+    session.shutdown()  # close session
+    cluster.shutdown()  # close cluster connection
 
 if __name__ == "__main__":
     main()
