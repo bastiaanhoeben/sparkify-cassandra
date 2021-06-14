@@ -46,7 +46,7 @@ def create_aggregate_datafile(file_path_list):
         with open(f, 'r', encoding='utf8', newline='') as csvfile:
             # creating a csv reader object
             csvreader = csv.reader(csvfile)
-            next(csvreader) # skip header
+            next(csvreader)  # skip header
 
             # extracting each data row one by one and append it
             for line in csvreader:
@@ -70,7 +70,7 @@ def create_aggregate_datafile(file_path_list):
              'length', 'level', 'location', 'sessionId', 'song', 'userId'])
         for row in full_data_rows_list:
             if (row[0] == ''):
-                continue # skips entries with missing artist
+                continue  # skips entries with missing artist
             writer.writerow((row[0], row[2], row[3], row[4], row[5], row[6],
                              row[7], row[8], row[12], row[13], row[16]))
 
@@ -109,7 +109,7 @@ def main():
 
     # Create a connection to the cassandra database
     try:
-        cluster = Cluster(['127.0.0.1']) # using 9042 native client port
+        cluster = Cluster(['127.0.0.1'])  # using 9042 native client port
         session = cluster.connect()
     except Exception as e:
         print(e)
