@@ -1,10 +1,6 @@
-import pandas as pd
 from cassandra.cluster import Cluster
-import re
 import os
 import glob
-import numpy as np
-import json
 import csv
 from cql_queries import *
 
