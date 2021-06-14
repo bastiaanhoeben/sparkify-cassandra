@@ -120,6 +120,7 @@ def insert_into_tables(file, session):
     :param: session: database session
     """
 
+    # insert data into query 1 table
     with open(file, encoding='utf8') as f:
         csv_reader = csv.reader(f)
         next(csv_reader)  # skip header
@@ -128,6 +129,7 @@ def insert_into_tables(file, session):
                                                   line[9], line[5]))
         print("Query 1 table written")
 
+    # insert data into query 2 table
     with open(file, encoding='utf8') as f:
         csv_reader = csv.reader(f)
         next(csv_reader)  # skip header
@@ -137,6 +139,50 @@ def insert_into_tables(file, session):
                                                       line[9], line[1],
                                                       line[4]))
         print("Query 2 table written")
+
+    # insert data into query 3 table
+    with open(file, encoding='utf8') as f:
+        csv_reader = csv.reader(f)
+        next(csv_reader)  # skip header
+        for line in csv_reader:
+            session.execute(table_insert_queries[2], (line[9], line[8],
+                                                      line[3], line[1],
+                                                      line[4]))
+        print("Query 3 table written")
+
+
+def execute_select_statements(session):
+    """Prints outcome of select queries to validate the data model."""
+
+    # print query 1 output
+    try:
+        rows = session.execute(select_queries[0])
+    except Exception as e:
+        print(e)
+
+    print("Query 1 output:")
+    for row in rows:
+        print(row.artist, row.song, row.length)
+
+    # print query 2 output
+    try:
+        rows = session.execute(select_queries[1])
+    except Exception as e:
+        print(e)
+
+    print("Query 2 output:")
+    for row in rows:
+        print(row.artist, row.song, row.first_name, row.last_name)
+
+    # print query 3 output
+    try:
+        rows = session.execute(select_queries[2])
+    except Exception as e:
+        print(e)
+
+    print("Query 3 output:")
+    for row in rows:
+        print(row.first_name, row.last_name)
 
 def main():
     # create csv files
@@ -159,8 +205,8 @@ def main():
     # insert data into the query tables
     insert_into_tables(file, session)
 
-
-
+    # print query data to validate data model
+    execute_select_statements(session)
 
     session.shutdown()  # close session
     cluster.shutdown()  # close cluster connection

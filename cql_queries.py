@@ -13,6 +13,10 @@ create_table_query2 = """CREATE TABLE IF NOT EXISTS query2 (user_id TEXT,
 session_id TEXT, item_in_session TEXT, artist TEXT, song TEXT, first_name TEXT, 
 last_name TEXT, PRIMARY KEY (user_id, session_id, item_in_session))"""
 
+create_table_query3 = """CREATE TABLE IF NOT EXISTS query3 (song TEXT, 
+session_id TEXT, item_in_session TEXT, first_name TEXT, last_name TEXT, PRIMARY 
+KEY (song, session_id, item_in_session))"""
+
 # Drop tables
 
 drop_table_query1 = """DROP TABLE IF EXISTS query1"""
@@ -28,6 +32,9 @@ insert_table_query2 = """INSERT INTO query2 (user_id, session_id,
 item_in_session, artist, song, first_name, last_name) VALUES (%s, %s, %s, 
 %s, %s, %s, %s)"""
 
+insert_table_query3 = """INSERT INTO query3 (song, session_id, 
+item_in_session, first_name, last_name) VALUES (%s, %s, %s, %s, %s)"""
+
 # Select data
 
 select_query1 = """SELECT artist, song, length FROM query1 WHERE session_id 
@@ -36,8 +43,14 @@ select_query1 = """SELECT artist, song, length FROM query1 WHERE session_id
 select_query2 = """SELECT artist, song, first_name, last_name FROM query2 WHERE 
 user_id = '10' AND session_id = '182'"""
 
+select_query3 = """SELECT first_name, last_name FROM query3 WHERE song = 
+'All Hands Against His Own'"""
+
 
 # Query list
-create_tables_queries = [create_table_query1, create_table_query2]
+create_tables_queries = [create_table_query1, create_table_query2,
+                         create_table_query3]
 drop_tables_queries = [drop_table_query1, drop_table_query2, drop_table_query3]
-table_insert_queries = [insert_table_query1, insert_table_query2]
+table_insert_queries = [insert_table_query1, insert_table_query2,
+                        insert_table_query3]
+select_queries = [select_query1, select_query2, select_query3]
