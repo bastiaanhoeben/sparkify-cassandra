@@ -1,3 +1,8 @@
+# Create keyspace
+
+create_sparkify_keyspace = """CREATE KEYSPACE IF NOT EXISTS sparkify WITH 
+REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 }"""
+
 # Create tables
 
 create_table_query1 = """CREATE TABLE IF NOT EXISTS query1 (session_id INT, 
@@ -29,3 +34,4 @@ user_id = 10 AND session_id = 182"""
 
 
 # Query list
+create_tables = [create_table_query1]

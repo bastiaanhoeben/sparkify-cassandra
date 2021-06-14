@@ -81,26 +81,21 @@ def create_aggregate_datafile(file_path_list, filename):
                                                                    in f)))
 
 
-def create_keyspace(session):
+def create_database_connection(host):
     """
-    Create keyspace and connect to keyspace.
-    :param: active database session
+    Create a connection to the cassandra database.
+    :param: host: database host IP
+    :return: cluster: database connection
+             session: database session
     """
 
-    # Create a keyspace
     try:
-        session.execute("""CREATE KEYSPACE IF NOT EXISTS sparkify WITH 
-        REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 }
-        """)
+        cluster = Cluster([host])  # using 9042 native client port
+        session = cluster.connect()
     except Exception as e:
         print(e)
 
-    # Connect to the keyspace
-    try:
-        session.set_keyspace('sparkify')
-    except Exception as e:
-        print(e)
-
+    return cluster, session
 
 
 def main():
@@ -110,15 +105,11 @@ def main():
     filename = 'event_datafile_new.csv'
     create_aggregate_datafile(file_path_list, filename)
 
-    # Create a connection to the cassandra database
-    try:
-        cluster = Cluster(['127.0.0.1'])  # using 9042 native client port
-        session = cluster.connect()
-    except Exception as e:
-        print(e)
+    # Create a connection to the local cassandra database
+    cluster, session = create_database_connection('127.0.0.1')
 
-    create_keyspace(session)
-
+    session.execute(create_sparkify_keyspace)  # create keyspace
+    session.set_keyspace('sparkify')  # connect to the keyspace
 
     session.shutdown()
     cluster.shutdown()
