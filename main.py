@@ -73,7 +73,7 @@ def create_aggregate_datafile(file_path_list, file):
 
     # check the number of rows in your csv file
     with open(file, 'r', encoding = 'utf8') as f:
-        print("Number of rows in denormalized data: {}".format(sum(1 for line
+        print("Number of rows in denormalized data: {}\n".format(sum(1 for line
                                                                    in f)))
 
 
@@ -156,7 +156,7 @@ def execute_select_statements(session):
     except Exception as e:
         print(e)
 
-    print("Query 1 output:")
+    print("\nQuery 1 output:")
     for row in rows:
         print(row.artist, row.song, row.length)
 
@@ -166,7 +166,7 @@ def execute_select_statements(session):
     except Exception as e:
         print(e)
 
-    print("Query 2 output:")
+    print("\nQuery 2 output:")
     for row in rows:
         print(row.artist, row.song, row.first_name, row.last_name)
 
@@ -176,7 +176,7 @@ def execute_select_statements(session):
     except Exception as e:
         print(e)
 
-    print("Query 3 output:")
+    print("\nQuery 3 output:")
     for row in rows:
         print(row.first_name, row.last_name)
 
