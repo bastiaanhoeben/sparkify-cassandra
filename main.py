@@ -123,7 +123,7 @@ def insert_into_tables(file, session):
         for line in csv_reader:
             session.execute(table_insert_queries[0], (line[8], line[3], line[0],
                                                   line[9], line[5]))
-        print("Query 1 table written")
+        print("played_songs table written")
 
     # insert data into query 2 table
     with open(file, encoding='utf8') as f:
@@ -134,7 +134,7 @@ def insert_into_tables(file, session):
                                                       line[3], line[0],
                                                       line[9], line[1],
                                                       line[4]))
-        print("Query 2 table written")
+        print("user_plays table written")
 
     # insert data into query 3 table
     with open(file, encoding='utf8') as f:
@@ -144,7 +144,7 @@ def insert_into_tables(file, session):
             session.execute(table_insert_queries[2], (line[9], line[8],
                                                       line[3], line[1],
                                                       line[4]))
-        print("Query 3 table written")
+        print("song_listeners table written")
 
 
 def execute_select_statements(session):
