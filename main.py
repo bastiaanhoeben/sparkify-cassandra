@@ -29,11 +29,12 @@ def get_datafile_paths():
     return file_path_list
 
 
-def create_aggregate_datafile(file_path_list):
+def create_aggregate_datafile(file_path_list, filename):
     """
     Creates one aggregate data file in csv format to be used for Apache
     Cassandra tables.
-    :param file_path_list: a list of individual data file file paths
+    :param: file_path_list: a list of individual data file file paths
+    :param: filename: name of the aggregate datafile created
     """
 
     # initiating an empty list of rows that will be generated from each file
@@ -63,7 +64,7 @@ def create_aggregate_datafile(file_path_list):
     csv.register_dialect('myDialect', quoting=csv.QUOTE_ALL,
                          skipinitialspace=True)
 
-    with open('event_datafile_new.csv', 'w', encoding='utf8', newline='') as f:
+    with open(filename, 'w', encoding='utf8', newline='') as f:
         writer = csv.writer(f, dialect='myDialect')
         writer.writerow(
             ['artist', 'firstName', 'gender', 'itemInSession', 'lastName',
@@ -75,7 +76,7 @@ def create_aggregate_datafile(file_path_list):
                              row[7], row[8], row[12], row[13], row[16]))
 
     # check the number of rows in your csv file
-    with open('event_datafile_new.csv', 'r', encoding = 'utf8') as f:
+    with open(filename, 'r', encoding = 'utf8') as f:
         print("Number of rows in denormalized data: {}".format(sum(1 for line
                                                                    in f)))
 
@@ -105,7 +106,9 @@ def create_keyspace(session):
 def main():
     # create csv files
     file_path_list = get_datafile_paths()
-    create_aggregate_datafile(file_path_list)
+
+    filename = 'event_datafile_new.csv'
+    create_aggregate_datafile(file_path_list, filename)
 
     # Create a connection to the cassandra database
     try:
@@ -115,6 +118,7 @@ def main():
         print(e)
 
     create_keyspace(session)
+
 
     session.shutdown()
     cluster.shutdown()
