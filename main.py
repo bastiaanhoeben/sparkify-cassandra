@@ -29,12 +29,12 @@ def get_datafile_paths():
     return file_path_list
 
 
-def create_aggregate_datafile(file_path_list, filename):
+def create_aggregate_datafile(file_path_list, file):
     """
     Creates one aggregate data file in csv format to be used for Apache
     Cassandra tables.
     :param: file_path_list: a list of individual data file file paths
-    :param: filename: name of the aggregate datafile created
+    :param: file: file path of the aggregate datafile created
     """
 
     # initiating an empty list of rows that will be generated from each file
@@ -64,7 +64,7 @@ def create_aggregate_datafile(file_path_list, filename):
     csv.register_dialect('myDialect', quoting=csv.QUOTE_ALL,
                          skipinitialspace=True)
 
-    with open(filename, 'w', encoding='utf8', newline='') as f:
+    with open(file, 'w', encoding='utf8', newline='') as f:
         writer = csv.writer(f, dialect='myDialect')
         writer.writerow(
             ['artist', 'firstName', 'gender', 'itemInSession', 'lastName',
@@ -76,14 +76,14 @@ def create_aggregate_datafile(file_path_list, filename):
                              row[7], row[8], row[12], row[13], row[16]))
 
     # check the number of rows in your csv file
-    with open(filename, 'r', encoding = 'utf8') as f:
+    with open(file, 'r', encoding = 'utf8') as f:
         print("Number of rows in denormalized data: {}".format(sum(1 for line
                                                                    in f)))
 
 
 def create_database_connection(host):
     """
-    Create a connection to the cassandra database.
+    Creates a connection to the cassandra database.
     :param: host: database host IP
     :return: cluster: database connection
              session: database session
@@ -99,36 +99,68 @@ def create_database_connection(host):
 
 
 def create_tables(session):
+    """Creates database tables"""
 
     for query in create_tables_queries:
         session.execute(query)
 
 
 def drop_tables(session):
+    """Drops database tables"""
 
     for query in drop_tables_queries:
         session.execute(query)
 
+
+def insert_into_tables(file, session):
+    """
+    Inserts selected data from the aggregate data file into the database
+    tables.
+    :param: file: file path of the aggregate data file
+    :param: session: database session
+    """
+
+    with open(file, encoding='utf8') as f:
+        csv_reader = csv.reader(f)
+        next(csv_reader)  # skip header
+        for line in csv_reader:
+            session.execute(table_insert_queries[0], (line[8], line[3], line[0],
+                                                  line[9], line[5]))
+        print("Query 1 table written")
+
+    with open(file, encoding='utf8') as f:
+        csv_reader = csv.reader(f)
+        next(csv_reader)  # skip header
+        for line in csv_reader:
+            session.execute(table_insert_queries[1], (line[10], line[8],
+                                                      line[3], line[0],
+                                                      line[9], line[1],
+                                                      line[4]))
+        print("Query 2 table written")
 
 def main():
     # create csv files
     file_path_list = get_datafile_paths()
 
     # write aggregate data to csv file
-    filename = 'event_datafile_new.csv'
-    create_aggregate_datafile(file_path_list, filename)
+    file = 'event_datafile_new.csv'
+    create_aggregate_datafile(file_path_list, file)
 
     # create a connection to the local cassandra database
-    cluster, session = create_database_connection('127.0.0.1')
+    host_ip = '127.0.0.1'
+    cluster, session = create_database_connection(host_ip)
 
     session.execute(create_keyspace_query)  # create keyspace
     session.set_keyspace('sparkify')  # connect to the keyspace
 
+    drop_tables(session)  # drop tables
     create_tables(session)  # create tables
 
+    # insert data into the query tables
+    insert_into_tables(file, session)
 
 
-    drop_tables(session)  # drop tables
+
 
     session.shutdown()  # close session
     cluster.shutdown()  # close cluster connection
