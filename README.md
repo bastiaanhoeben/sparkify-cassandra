@@ -31,7 +31,7 @@ The dataset consists of songplay event data, wherein the data for each day
 is contained in a separate file in CSV format. To get a feel for the data 
 format, a sample of the data is given below.
 
-
+![Data sample](support_files/data_sample.png)
 
 ### Queries and data model
 
@@ -50,7 +50,7 @@ database are:
    
 Consequently, the data model for the database looks as follows:
 
-![Data Model](support_files/data_model.png)
+![Data model](support_files/data_model.png)
 
 ### Running instructions
 
