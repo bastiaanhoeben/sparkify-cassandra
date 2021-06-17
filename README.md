@@ -35,9 +35,7 @@ format, a sample of the data is given below.
 
 ### Queries and data model
 
-The data in the Apache Cassandra database is modelled to fit the type of 
-queries that are run against the database. The type of queries run against the 
-database are:
+The type of queries run against the database are:
 
 1. Give me the artist, song title and song's length in the music app 
    history that was heard during sessionId = #, and itemInSession = #.
@@ -47,6 +45,60 @@ database are:
    
 3. Give me every user name (first and last) in my music app history who 
    listened to the song #.
+
+The data in the Apache Cassandra database is modelled to fit the type of 
+queries that are run against the database. For this reason, each query type 
+needs its own table to perform the queries on. To be descriptive of the type of 
+queries performed, the tables are named as follows:
+
+1.  played_songs
+2.  user_plays
+3.  song_listeners
+
+Now, the corresponding select CQL queries can be formulated. An example 
+query against each of the tables is given below:
+
+1.  Query 1:
+    ```
+    SELECT artist, song, length 
+    FROM played_songs 
+    WHERE session_id = '338' AND item_in_session = '4';
+    ```
+
+2.  Query 2:
+    ```
+    SELECT artist, song, first_name, last_name 
+    FROM user_play
+    WHERE user_id = '10' AND session_id = '182';
+    ```
+    
+3.  Query 3:
+    ```
+    SELECT first_name, last_name
+    FROM song_listeners
+    WHERE song = 'All Hands Against His Own';
+    ```
+
+To successfully run the first query, a table must be created that can filer 
+based on *session_id* and *item_in_session*. As such, both *session_id* and 
+*item_in_session* must be contained in one, compound primary key. This primary 
+key also meets the requirement of uniqueness. Moreover, the columns *artist*, 
+*song* and *length* that are in the select statement must be included as well.
+
+Running the second query requires a table that can filter based on *user_id* 
+and *session_id*. Moreover, the results should be ordered based on 
+*item_in_session*. To make this possible, and make the primary key unique as 
+well, the primary key must comprise *user_id*, *session_id* and 
+*item_in_session*. The columns *user_id* and *session_id* may hereby act as 
+compound partition key, where *item_in_session* then constitutes a clustering 
+column. The columns *artist*, *song*, *first_name* and *last_name* must be 
+included as well, as they are in the select statement.
+
+Finally, the third query requires a table that can filter based on *song*
+(song title). To make the primary key unique, an efficient choice would be to 
+include *song* together with *user_id* in the primary key. For the partition 
+key, *song* is chosen. Finally, the columns *first_name* and *last_name* are 
+included as they are included in the select statement.
    
 Consequently, the data model for the database looks as follows:
 
