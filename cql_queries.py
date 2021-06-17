@@ -11,7 +11,7 @@ session_id, item_in_session))"""
 
 create_table_query2 = """CREATE TABLE IF NOT EXISTS user_plays (user_id 
 TEXT, session_id TEXT, item_in_session TEXT, artist TEXT, song TEXT, 
-first_name TEXT, last_name TEXT, PRIMARY KEY (user_id, session_id, 
+first_name TEXT, last_name TEXT, PRIMARY KEY ((user_id, session_id), 
 item_in_session))"""
 
 create_table_query3 = """CREATE TABLE IF NOT EXISTS song_listeners (song TEXT, 
