@@ -15,8 +15,7 @@ first_name TEXT, last_name TEXT, PRIMARY KEY ((user_id, session_id),
 item_in_session))"""
 
 create_table_query3 = """CREATE TABLE IF NOT EXISTS song_listeners (song TEXT, 
-user_id TEXT, first_name TEXT, last_name TEXT, PRIMARY 
-KEY (song, user_id))"""
+user_id TEXT, first_name TEXT, last_name TEXT, PRIMARY KEY (song, user_id))"""
 
 # Drop tables
 
