@@ -141,9 +141,8 @@ def insert_into_tables(file, session):
         csv_reader = csv.reader(f)
         next(csv_reader)  # skip header
         for line in csv_reader:
-            session.execute(table_insert_queries[2], (line[9], line[8],
-                                                      line[3], line[1],
-                                                      line[4]))
+            session.execute(table_insert_queries[2], (line[9], line[10],
+                                                      line[1], line[4]))
         print("song_listeners table written")
 
 

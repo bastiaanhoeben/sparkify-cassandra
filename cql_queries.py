@@ -15,8 +15,8 @@ first_name TEXT, last_name TEXT, PRIMARY KEY ((user_id, session_id),
 item_in_session))"""
 
 create_table_query3 = """CREATE TABLE IF NOT EXISTS song_listeners (song TEXT, 
-session_id TEXT, item_in_session TEXT, first_name TEXT, last_name TEXT, PRIMARY 
-KEY (song, session_id, item_in_session))"""
+user_id TEXT, first_name TEXT, last_name TEXT, PRIMARY 
+KEY (song, user_id))"""
 
 # Drop tables
 
@@ -33,8 +33,8 @@ insert_table_query2 = """INSERT INTO user_plays (user_id, session_id,
 item_in_session, artist, song, first_name, last_name) VALUES (%s, %s, %s, 
 %s, %s, %s, %s)"""
 
-insert_table_query3 = """INSERT INTO song_listeners (song, session_id, 
-item_in_session, first_name, last_name) VALUES (%s, %s, %s, %s, %s)"""
+insert_table_query3 = """INSERT INTO song_listeners (song, user_id, first_name, 
+last_name) VALUES (%s, %s, %s, %s)"""
 
 # Select data
 
